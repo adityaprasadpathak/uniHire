@@ -1,0 +1,91 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+spring:
+  profiles:
+    active: local
+  application:
+    name: uniHire
+
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
+      - org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
+      - org.jobrunr.spring.autoconfigure.storage.JobRunrElasticSearchStorageAutoConfiguration
+      - org.jobrunr.spring.autoconfigure.JobRunrAutoConfiguration
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/unihire
+    username: postgres
+    password: root@123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  elasticsearch:
+    uris: https://192.168.0.138:9200
+    username: elastic
+    password: wu6po8RAZgzu3ueGmmbN
+
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:dummy-key}
+        chat:
+          options:
+            model: gemini-3.5-flash
+        embedding:
+          api-key: ${GEMINI_API_KEY:dummy-key}
+          options:
+            model: text-embedding-004
+
+jobrunr:
+  database:
+    type: sql
+  background-job-server:
+    enabled: true
+  dashboard:
+    enabled: true
+    port: 8000
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+oauth2:
+  google:
+    client-id: YOUR_GOOGLE_CLIENT_ID_HERE
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration
+  ai:
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
