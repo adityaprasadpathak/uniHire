@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.unihire.controllers")
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -37,6 +37,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.UNAUTHORIZED, "INVALID_OTP", request);
     }
 
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(org.springframework.security.authentication.BadCredentialsException ex, HttpServletRequest request) {
+        return buildErrorResponse(new Exception("Invalid email or password"), HttpStatus.UNAUTHORIZED, "BAD_CREDENTIALS", request);
+    }
+
     @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<ErrorResponse> handleRateLimitExceeded(RateLimitExceededException ex, HttpServletRequest request) {
         return buildErrorResponse(ex, HttpStatus.TOO_MANY_REQUESTS, "RATE_LIMIT_EXCEEDED", request);
@@ -50,6 +55,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex, HttpServletRequest request) {
         return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, "BAD_REQUEST", request);
+    }
+
+    @ExceptionHandler({org.springframework.web.multipart.MaxUploadSizeExceededException.class, org.springframework.web.multipart.MultipartException.class})
+    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceeded(Exception ex, HttpServletRequest request) {
+        return buildErrorResponse(new Exception("File size exceeds maximum permitted limit of 10 MB."), HttpStatus.BAD_REQUEST, "MAX_UPLOAD_SIZE_EXCEEDED", request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

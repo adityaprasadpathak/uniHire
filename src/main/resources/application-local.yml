@@ -1,23 +1,55 @@
 spring:
+  datasource:
+    url: ${POSTGRES_HOST_KEY:jdbc:postgresql://localhost:5432/unihire}
+    username: ${POSTGRES_USERNAME_KEY:postgres}
+    password: ${POSTGRES_PASSWORD_KEY:root123}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST_KEY:192.168.0.188}
+      port: ${REDIS_PORT_KEY:6379}
+      username: ${REDIS_USERNAME_KEY:}
+      password: ${REDIS_PASSWORD_KEY:}
   ai:
     google:
       genai:
-        api-key: ${GEMINI_API_KEY:dummy-key}
+        api-key: ${GEMINI_API_KEY}
         chat:
           options:
-            model: gemini-3.5-flash
+            model: gemini-3.6-flash
             temperature: 0.7
         embedding:
-          api-key: ${GEMINI_API_KEY:dummy-key}
+          api-key: ${GEMINI_API_KEY}
           options:
             model: text-embedding-004
-  elasticsearch:
-    uris: http://192.168.0.138:9200
-    username: elastic
-    password: wu6po8RAZgzu3ueGmmbN
+  opensearch:
+    uris: ${OPENSEARCH_URIS:https://192.168.0.188:9200}
+    username: ${OPENSEARCH_USERNAME:admin}
+    password: ${OPENSEARCH_PASSWORD:River!Cloud7_Tulip#84}
+    sync-on-startup: ${OPENSEARCH_SYNC_ON_STARTUP:false}
 
-minio:
-  url: http://192.168.0.138:9000
-  access-key: minioadmin
-  secret-key: minioadmin
-  bucket: unihire-local
+cloudflare:
+  r2:
+    endpoint: ${R2_ENDPOINT:https://<YOUR_ACCOUNT_ID>.r2.cloudflarestorage.com}
+    access-key: ${R2_ACCESS_KEY:<YOUR_R2_ACCESS_KEY>}
+    secret-key: ${R2_SECRET_KEY:<YOUR_R2_SECRET_KEY>}
+    bucket: ${R2_BUCKET:unihire-local}
+    public-url: ${R2_PUBLIC_URL:https://pub-<YOUR_PUB_URL>.r2.dev}
+
+# minio:
+#   url: ${MINIO_URL:http://192.168.0.138:9000}
+#   access-key: ${MINIO_ACCESS_KEY:minioadmin}
+#   secret-key: ${MINIO_SECRET_KEY:minioadmin}
+#   bucket: ${MINIO_BUCKET:unihire-local}
+
+aws:
+  s3:
+    region: ${AWS_REGION:us-east-1}
+    access-key: ${AWS_ACCESS_KEY_ID:}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:}
+    bucket: ${AWS_S3_BUCKET:unihire-local}
+
+unihire:
+  job-views:
+    sync-rate-ms: ${JOB_VIEWS_SYNC_INTERVAL_MS:900000} # 15 minutes
+    sync-initial-delay-ms: ${JOB_VIEWS_SYNC_INITIAL_DELAY_MS:60000} # 1 minute

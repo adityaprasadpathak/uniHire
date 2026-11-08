@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "certifications")
@@ -30,7 +30,7 @@ public class Certification {
     @Column(nullable = false)
     private String issuingOrganization;
 
-    private LocalDate issueDate;
+    private String issueDate;
     
     private String credentialUrl;
 }

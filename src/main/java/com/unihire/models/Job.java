@@ -31,18 +31,53 @@ public class Job {
     private String description;
 
     private String experience;
+    private Integer minExperience;
+    private Integer maxExperience;
     private String salary;
     
     @Column(columnDefinition = "TEXT")
     private String skills;
+    
+    @Column(columnDefinition = "TEXT")
+    private String preferredSkills;
     
     private String location;
     private String department;
     private String employmentType;
     private Integer numberOfVacancies;
     
+    // Additional recruitment fields
+    private String jobLevel;
+    private String workMode;
+    private Integer openings;
+    private String education;
+    private String certifications;
+    private String languages;
+    
+    @Column(columnDefinition = "TEXT")
+    private String responsibilities;
+    
+    @Column(columnDefinition = "TEXT")
+    private String qualifications;
+    
     @Column(columnDefinition = "TEXT")
     private String benefits;
+
+    private String workingDays;
+    private String shiftTiming;
+    private String travelRequirement;
+    private String noticePeriod;
+    private String employmentCategory;
+    private String industry;
+    private String incentives;
+    private String hiringManager;
+    private String recruiter;
+
+    @Column(columnDefinition = "TEXT")
+    private String interviewProcess;
+
+    @Column(columnDefinition = "TEXT")
+    private String screeningQuestions;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -22,17 +22,18 @@ services:
       - redis-data:/data
     restart: unless-stopped
 
-  elasticsearch:
-    image: elasticsearch:8.13.0
-    container_name: unihire-elasticsearch
+  opensearch:
+    image: opensearchproject/opensearch:2.19.0
+    container_name: unihire-opensearch
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - DISABLE_SECURITY_PLUGIN=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
+      - "9600:9600"
     volumes:
-      - es-data:/usr/share/elasticsearch/data
+      - opensearch-data:/usr/share/opensearch/data
     restart: unless-stopped
 
   minio:
@@ -52,5 +53,5 @@ services:
 volumes:
   postgres-data:
   redis-data:
-  es-data:
+  opensearch-data:
   minio-data:

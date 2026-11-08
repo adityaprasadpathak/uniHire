@@ -35,3 +35,16 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Secrets and local overrides
+.env
+.env.*
+*.env
+application-secret*.yml
+*.secret
+*.pem
+*.key
+
+# Temporary and dump files
+*.stackdump
+*.log

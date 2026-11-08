@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "experiences")
@@ -30,8 +30,8 @@ public class Experience {
     @Column(nullable = false)
     private String company;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
 
     @Column(columnDefinition = "TEXT")
     private String description;

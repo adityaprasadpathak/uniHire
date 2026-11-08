@@ -1,6 +1,6 @@
 package com.unihire.config;
 
-import com.unihire.services.JwtService;
+import com.unihire.services.auth.JwtService;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -13,6 +13,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+/**
+ * Interceptor for authenticating WebSocket incoming messages using JWT.
+ * It extracts and validates the JWT token from the STOMP CONNECT frame's native headers.
+ */
 @Component
 public class JwtChannelInterceptor implements ChannelInterceptor {
 
@@ -24,6 +28,15 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Intercepts messages before they are sent to the channel.
+     * If the message is a STOMP CONNECT command, it checks for an Authorization header
+     * containing a Bearer token, validates it, and sets the authenticated user in the accessor.
+     *
+     * @param message the message to be sent
+     * @param channel the channel the message is being sent to
+     * @return the potentially modified message, or null to block the message
+     */
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);

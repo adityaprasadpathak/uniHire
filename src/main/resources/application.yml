@@ -9,6 +9,12 @@ spring:
   application:
     name: uniHire
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   autoconfigure:
     exclude:
       - org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration
@@ -17,63 +23,69 @@ spring:
       - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
       - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
       - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
-      - org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
-      - org.jobrunr.spring.autoconfigure.storage.JobRunrElasticSearchStorageAutoConfiguration
-      - org.jobrunr.spring.autoconfigure.JobRunrAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/unihire
-    username: postgres
-    password: root@123
+    url: ${POSTGRES_HOST_KEY:jdbc:postgresql://localhost:5432/unihire}
+    username: ${POSTGRES_USERNAME_KEY:postgres}
+    password: ${POSTGRES_PASSWORD_KEY:root123}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: false
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST_KEY:localhost}
+      port: ${REDIS_PORT_KEY:6379}
+      username: ${REDIS_USERNAME_KEY:}
+      password: ${REDIS_PASSWORD_KEY:}
 
-  elasticsearch:
-    uris: https://192.168.0.138:9200
-    username: elastic
-    password: wu6po8RAZgzu3ueGmmbN
+  opensearch:
+    uris: ${OPENSEARCH_URIS:https://localhost:9200}
+    username: ${OPENSEARCH_USERNAME:admin}
+    password: ${OPENSEARCH_PASSWORD:admin}
+    sync-on-startup: ${OPENSEARCH_SYNC_ON_STARTUP:false}
 
   ai:
+    vectorstore:
+      pgvector:
+        initialize-schema: false
+        distance-type: COSINE_DISTANCE
+        dimensions: 3072
     google:
       genai:
-        api-key: ${GEMINI_API_KEY:dummy-key}
+        api-key: ${GEMINI_API_KEY}
         chat:
           options:
             model: gemini-3.5-flash
         embedding:
-          api-key: ${GEMINI_API_KEY:dummy-key}
+          api-key: ${GEMINI_API_KEY}
           options:
             model: text-embedding-004
 
-jobrunr:
-  database:
-    type: sql
-  background-job-server:
-    enabled: true
-  dashboard:
-    enabled: true
-    port: 8000
+resume:
+  ai:
+    provider: gemini
 
 jwt:
-  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-  expiration: 86400000
-  refresh-expiration: 604800000
+  secret: ${JWT_SECRET_KEY}
+  expiration: 86400000 # 1 day in milliseconds
+  refresh-expiration: 604800000 # 7 days in milliseconds
 
 oauth2:
   google:
     client-id: YOUR_GOOGLE_CLIENT_ID_HERE
+
+unihire:
+  job-views:
+    sync-rate-ms: ${JOB_VIEWS_SYNC_INTERVAL_MS:900000} # 15 minutes
+    sync-initial-delay-ms: ${JOB_VIEWS_SYNC_INITIAL_DELAY_MS:60000} # 1 minute
 
 ---
 spring:
@@ -86,6 +98,18 @@ spring:
   ai:
     vectorstore:
       pgvector:
-        initialize-schema: true
-        index-type: HNSW
+        initialize-schema: false
         distance-type: COSINE_DISTANCE
+        dimensions: 3072
+
+# SpringDoc / Swagger OpenAPI Documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true

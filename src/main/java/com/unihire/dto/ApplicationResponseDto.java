@@ -34,4 +34,5 @@ public class ApplicationResponseDto {
     private String aiModel;
     private String aiPromptVersion;
     private LocalDateTime aiScoredAt;
+    private Integer unreadMessageCount;
 }

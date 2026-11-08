@@ -1,6 +1,6 @@
 package com.unihire.config;
 
-import com.unihire.services.JwtService;
+import com.unihire.services.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +16,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Custom filter for handling JWT authentication in incoming HTTP requests.
+ * Extracts the JWT token from the Authorization header, validates it,
+ * and sets the authenticated user in the Spring Security context.
+ */
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -26,6 +31,18 @@ public class JwtFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Core filtering method that executes once per request.
+     * Extracts the JWT token from the Authorization header if present.
+     * If valid, it retrieves the user details, checks if the account is locked,
+     * and establishes the security context.
+     *
+     * @param request the incoming HTTP request
+     * @param response the outgoing HTTP response
+     * @param filterChain the filter chain to continue request processing
+     * @throws ServletException if an error occurs during filtering
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
